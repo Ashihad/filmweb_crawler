@@ -5,29 +5,31 @@ import logging
 logger = logging.getLogger(__name__)
 
 class BrowserWrapper:
-    def __init__(self, browserName):
+    def __init__(self, browserName, driverPath):
         self.browserName = browserName.lower().strip()
+        self.driverPath = driverPath
         logger.debug(f"Attempting to init {self.browserName.capitalize()} driver")
         if self.browserName == "firefox":
-            self.driverPath = "/usr/local/bin/geckodriver"
             self.service = webdriver.FirefoxService(self.driverPath)                        # start geckodriver (no args attempts to download it)
             try:
                 self.driver = webdriver.Firefox(service=self.service)                       # launch Firefox
             except exceptions.SessionNotCreatedException:
-                # from None hides traceback from Selenium exception
                 raise NoBrowserFound("No Firefox found, please install Firefox") from None
-            logger.debug(f"{self.browserName.capitalize()} driver initialized")
         elif self.browserName == "chrome":
-            self.driverPath = ""                                                            # I don't care for a specific path atm, since I use Firefox, TODO
-            self.service = webdriver.ChromeService()
+            self.service = webdriver.ChromeService(self.driverPath)
             try:
                 self.driver = webdriver.Chrome(service=self.service)
             except exceptions.SessionNotCreatedException as e:
-                # from None hides traceback from Selenium exception
                 raise NoBrowserFound("No Chrome found, please install Chrome") from None
-            logger.debug(f"{self.browserName.capitalize()} driver initialized")
+        elif self.browserName == "edge":
+            self.service = webdriver.EdgeService(self.driverPath)
+            try:
+                self.driver = webdriver.Edge(service=self.service)
+            except exceptions.SessionNotCreatedException as e:
+                raise NoBrowserFound("No Edge found, please install Edge") from None
         else:
             raise NoBrowserFound("Please specify valid browser")
+        logger.debug(f"{self.browserName.capitalize()} driver initialized")
 
     def browse(self, address):
         self.driver.get(address)
@@ -39,3 +41,6 @@ class BrowserWrapper:
 
 class NoBrowserFound(Exception):
     pass
+
+if __name__ == "__main__":
+    print("BrowserWrapper class")
