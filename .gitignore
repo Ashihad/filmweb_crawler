@@ -1,3 +1,2 @@
-/.python-version
-/.venv
+/.*
 /src/__pycache__
