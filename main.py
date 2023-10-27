@@ -13,7 +13,7 @@ def main():
     config: Dict[str, str] = cfgParser.parse()
 
     browser = BrowserWrapper(config["driver"]["drivertype"], config["driver"]["driverpath"])
-    browser.browse("https://realpython.com/python-logging/")
+    browser.browse("https://filmweb.pl")
     browser.close()
 
 if __name__ == "__main__":
